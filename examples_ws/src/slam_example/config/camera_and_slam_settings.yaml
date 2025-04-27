@@ -1,0 +1,45 @@
+%YAML:1.0
+File.version: "1.0"
+Camera.type: "PinHole"
+
+Camera1.fx: 2366.86821
+Camera1.fy: 1988.79581
+Camera1.cx: 932.99015
+Camera1.cy: 534.21236
+
+Camera1.k1: 0.14253807
+Camera1.k2: -0.32860464
+Camera1.p1: 0.00474441
+Camera1.p2: -0.00443257
+Camera1.k3: 0.47141411
+
+Camera.width: 1920
+Camera.height: 1080
+
+Camera.fps: 30
+Camera.RGB: 1
+
+ORBextractor.nFeatures: 1250
+ORBextractor.scaleFactor: 1.2
+ORBextractor.nLevels: 8
+ORBextractor.iniThFAST: 20
+ORBextractor.minThFAST: 5
+
+Viewer.KeyFrameSize:    0.05
+Viewer.KeyFrameLineWidth: 1.0
+Viewer.GraphLineWidth:  0.9
+Viewer.PointSize:       2.0
+Viewer.CameraSize:      0.08
+Viewer.CameraLineWidth: 3.0
+Viewer.ViewpointX:      0.0
+Viewer.ViewpointY:     -0.7
+Viewer.ViewpointZ:     -3.5
+Viewer.ViewpointF:     500.0
+
+# Плоская секция IMU (Monocular‑Inertial), точно как в Stereo-Inertial примере :contentReference[oaicite:0]{index=0}
+IMU.T_b_c1: !!opencv-matrix rows:4 cols:4 dt:d data:[1.0,0.0,0.0,0.0, 0.0,1.0,0.0,0.0, 0.0,0.0,1.0,0.0, 0.0,0.0,0.0,1.0]
+IMU.NoiseGyro: 4.3633e-05
+IMU.NoiseAcc:  1.6257e-03
+IMU.GyroWalk:  4.8481e-06
+IMU.AccWalk:   2.9194e-05
+IMU.Frequency: 200

@@ -1,0 +1,4 @@
+slam_example:
+  ros__parameters:
+    vocab_path: "/home/examples_ws/src/slam_example/config/ORBvoc.txt"
+    config_path: "/home/examples_ws/src/slam_example/config/camera_and_slam_settings.yaml"

@@ -1,0 +1,10 @@
+.vscode/
+ORB_SLAM3/
+Pangolin/
+**/log/
+**/build/
+**/install/
+**/core
+**/core.*
+**/ORBvoc.txt
+**/ORBvoc.txt*
