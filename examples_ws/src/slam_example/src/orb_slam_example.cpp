@@ -19,8 +19,8 @@ int main(int argc, char *argv[])
 
     // Параметры словаря и конфига
     std::string vocab_path = "/home/examples_ws/src/slam_example/config/ORBvoc.txt";
-    // std::string config_path = "/home/examples_ws/src/slam_example/config/camera_and_slam_settings.yaml";
-    std::string config_path = "/home/examples_ws/src/slam_example/cfg.yaml";
+    std::string config_path = "/home/examples_ws/src/slam_example/config/camera_and_slam_settings.yaml";
+    // std::string config_path = "/home/examples_ws/src/slam_example/cfg.yaml";
 
 
     // Паблишер SLAM-одометрии

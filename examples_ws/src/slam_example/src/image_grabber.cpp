@@ -44,6 +44,10 @@ void ImageGrabber::grabImage(const sensor_msgs::msg::Image::SharedPtr msg)
     std::lock_guard<std::mutex> lock(mBufMutex);
     if (!img0Buf.empty()) img0Buf.pop();
     img0Buf.push(msg);
+    RCLCPP_DEBUG(
+        rosNode_->get_logger(),
+        "grabImage: received image at %.6f",
+        msg->header.stamp.sec + msg->header.stamp.nanosec * 1e-9);
 }
 
 void ImageGrabber::grabImu(const ImuMsg::SharedPtr msg)
@@ -52,11 +56,26 @@ void ImageGrabber::grabImu(const ImuMsg::SharedPtr msg)
 
     mBufMutexImu.lock();
 
-    if (!mImuBuf.empty())
-        mImuBuf.pop();
+    // if (!mImuBuf.empty())
+    //     mImuBuf.pop();
     mImuBuf.push(msg);
 
+    RCLCPP_INFO(rosNode_->get_logger(), "grabImu: pushed imu stamp=%.6f, buffer size=%zu",
+      Utility::StampToSec(msg->header.stamp),
+      mImuBuf.size());
+
+    RCLCPP_INFO(
+        rosNode_->get_logger(),
+        "grabImu: gyro=[%.2f,%.2f,%.2f] deg/s, acc=[%.3f,%.3f,%.3f] m/s2, time=%.6f",
+        msg->angular_velocity.x,
+        msg->angular_velocity.y,
+        msg->angular_velocity.z,
+        msg->linear_acceleration.x,
+        msg->linear_acceleration.y,
+        msg->linear_acceleration.z,
+        msg->header.stamp.sec + msg->header.stamp.nanosec * 1e-9);
     mBufMutexImu.unlock();
+    
 }
 
 cv::Mat ImageGrabber::getImage(const sensor_msgs::msg::Image::SharedPtr &img_msg)
@@ -96,10 +115,20 @@ void ImageGrabber::processImages()
         }
         if (mbClahe) mClahe->apply(im, im);
 
-        
+        // FpsLog(tIm);
 
-        // Monocular tracking
         auto vImuMeas = imuToSlam(tIm);
+
+        if (vImuMeas.empty()) {
+            RCLCPP_WARN(
+              rosNode_->get_logger(),
+              "Empty IMU measurements vector at image time %.6f",
+              tIm);
+          }
+        else {
+            RCLCPP_INFO(rosNode_->get_logger(), "imuToSlam: got %zu measurements for image at %.6f", vImuMeas.size(), tIm);
+        }
+        // Monocular tracking
         Sophus::SE3f curr_pose = mpSLAM->TrackMonocular(im, tIm, vImuMeas);
         auto state = mpSLAM->GetTrackingState();
 
