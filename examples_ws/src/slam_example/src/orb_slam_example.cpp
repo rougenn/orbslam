@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     auto SLAM = std::make_shared<ORB_SLAM3::System>(
         vocab_path,
         config_path,
-        ORB_SLAM3::System::IMU_MONOCULAR,
+        ORB_SLAM3::System::MONOCULAR,
         false
     );
 
