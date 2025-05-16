@@ -9,7 +9,7 @@ class Utility
 public:
   static double StampToSec(builtin_interfaces::msg::Time stamp)
   {
-    double seconds = stamp.sec + (stamp.nanosec * pow(10,-9));
+    double seconds = stamp.sec + (stamp.nanosec * 1e-9);
     return seconds;
   }
 };
@@ -52,28 +52,33 @@ void ImageGrabber::grabImage(const sensor_msgs::msg::Image::SharedPtr msg)
 
 void ImageGrabber::grabImu(const ImuMsg::SharedPtr msg)
 {
-    // GrabImu implementation...
 
     mBufMutexImu.lock();
 
     // if (!mImuBuf.empty())
     //     mImuBuf.pop();
     mImuBuf.push(msg);
+    
+    const size_t MAX_IMU_BUF = 1000;
+    while (mImuBuf.size() > MAX_IMU_BUF) {
+        mImuBuf.pop();
+    }
 
-    RCLCPP_INFO(rosNode_->get_logger(), "grabImu: pushed imu stamp=%.6f, buffer size=%zu",
-      Utility::StampToSec(msg->header.stamp),
-      mImuBuf.size());
+    // RCLCPP_INFO(rosNode_->get_logger(), "grabImu: pushed imu stamp=%.6f, buffer size=%zu",
+    //   Utility::StampToSec(msg->header.stamp),
+    //   mImuBuf.size());
 
-    RCLCPP_INFO(
-        rosNode_->get_logger(),
-        "grabImu: gyro=[%.2f,%.2f,%.2f] deg/s, acc=[%.3f,%.3f,%.3f] m/s2, time=%.6f",
-        msg->angular_velocity.x,
-        msg->angular_velocity.y,
-        msg->angular_velocity.z,
-        msg->linear_acceleration.x,
-        msg->linear_acceleration.y,
-        msg->linear_acceleration.z,
-        msg->header.stamp.sec + msg->header.stamp.nanosec * 1e-9);
+    // RCLCPP_INFO(
+    //     rosNode_->get_logger(),
+    //     "grabImu: gyro=[%.2f,%.2f,%.2f] deg/s, acc=[%.3f,%.3f,%.3f] m/s2, time=%.6f",
+    //     msg->angular_velocity.x,
+    //     msg->angular_velocity.y,
+    //     msg->angular_velocity.z,
+    //     msg->linear_acceleration.x,
+    //     msg->linear_acceleration.y,
+    //     msg->linear_acceleration.z,
+    //     msg->header.stamp.sec + msg->header.stamp.nanosec * 1e-9);
+
     mBufMutexImu.unlock();
     
 }
@@ -124,6 +129,7 @@ void ImageGrabber::processImages()
               rosNode_->get_logger(),
               "Empty IMU measurements vector at image time %.6f",
               tIm);
+            continue;
           }
         else {
             RCLCPP_INFO(rosNode_->get_logger(), "imuToSlam: got %zu measurements for image at %.6f", vImuMeas.size(), tIm);
@@ -134,9 +140,8 @@ void ImageGrabber::processImages()
 
         LogResult(curr_pose);
 
-        if (state == TS::OK) {
-            publishSE3fToOdom(curr_pose);
-        }
+
+        publishSE3fToOdom(curr_pose, tIm);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
@@ -177,9 +182,9 @@ void ImageGrabber::FpsLog(double tIm) {
     }
 }
 
-void ImageGrabber::publishSE3fToOdom(const Sophus::SE3f &se3)
+void ImageGrabber::publishSE3fToOdom(const Sophus::SE3f &se3, double tIm)
 {
-    odom_msg_.header.stamp = rosNode_->now();
+    odom_msg_.header.stamp = rclcpp::Time(static_cast<int64_t>(tIm * 1e9));
     auto t = se3.translation();
     odom_msg_.pose.pose.position.x = t.x();
     odom_msg_.pose.pose.position.y = t.y();
