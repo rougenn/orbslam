@@ -1,3 +1,5 @@
+cd /home
+
 sudo apt update
 
 sudo apt install -y python-pip git python3-jinja2
@@ -11,8 +13,117 @@ sudo apt install -y \
   libglib2.0-dev libgstreamer-plugins-base1.0-dev \
   build-essential ninja-build libdrm-dev libexpat1-dev python3-packaging
 
-sudo apt install python3-pip
-sudo apt install pkg-config libevent-dev
-sudo apt install python3-ply
-sudo apt install libboost-all-dev
-sudo apt install ros-humble-tf-transformations -y # for udp_publisher
+git clone https://github.com/raspberrypi/libcamera.git
+cd libcamera
+
+sudo apt install -y python3-pip
+sudo pip3 install --upgrade meson 
+export PATH=/usr/local/bin:$PATH
+
+sudo apt install -y pkg-config libevent-dev
+sudo apt install -y python3-ply
+
+meson setup build --buildtype=release \
+  -Dpipelines=rpi/vc4,rpi/pisp \
+  -Dipas=rpi/vc4,rpi/pisp \
+  -Dv4l2=enabled \
+  -Dgstreamer=disabled \
+  -Dtest=false \
+  -Dlc-compliance=disabled \
+  -Dcam=enabled \
+  -Dqcam=disabled \
+  -Ddocumentation=disabled \
+  -Dpycamera=enabled
+
+ninja -C build
+sudo ninja -C build install
+sudo ldconfig
+# ---------- here cam -l works!!!! ----------
+
+
+mkdir -p ~/camera_ws/src
+cd ~/camera_ws/src
+git clone https://github.com/christianrauch/camera_ros.git
+cd ~/camera_ws
+source /opt/ros/$ROS_DISTRO/setup.bash
+
+sudo rosdep init
+rosdep update
+
+rosdep install -y \
+    --from-paths src \
+    --ignore-src \
+    --rosdistro $ROS_DISTRO \
+    --skip-keys=libcamera
+
+colcon build \
+    --packages-select camera_ros \
+    --event-handlers=console_direct+
+
+# now camera node installed!!!
+
+cd /home
+git clone -b c++14_comp https://github.com/UZ-SLAMLab/ORB_SLAM3.git ORB_SLAM3
+cd ORB_SLAM3
+sudo apt install -y libboost-all-dev
+
+echo "Configuring and building Thirdparty/DBoW2 ..."
+
+cd Thirdparty/DBoW2
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j4
+
+cd ../../g2o
+
+echo "Configuring and building Thirdparty/g2o ..."
+
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j4
+
+cd ../../Sophus
+
+echo "Configuring and building Thirdparty/Sophus ..."
+
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j4
+
+cd ../../../
+
+echo "Uncompress vocabulary ..."
+
+cd Vocabulary
+tar -xf ORBvoc.txt.tar.gz
+cd ..
+
+echo "Configuring and building ORB_SLAM3 ..."
+
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j2
+
+export LD_LIBRARY_PATH=/home/ORB_SLAM3/lib:/usr/local/lib:$LD_LIBRARY_PATH
+
+# orbslam have built
+cd /home
+git clone https://github.com/rougenn/orbslam.git -b master
+mv orbslam/examples_ws/ .
+mv /home/ORB_SLAM3/Vocabulary/ORBvoc.txt examples_ws/src/slam_example/config/
+
+cd /examples_ws
+colcon build
+cd ..
+
+mv orbslam/run_nodes.sh .
+chmod +x ./run_nodes.sh
+
+cd orbslam/ros2_ws/
+colcon build
+
+
