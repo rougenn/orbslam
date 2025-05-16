@@ -32,7 +32,7 @@ public:
     void grabImage(const sensor_msgs::msg::Image::SharedPtr msg);
     cv::Mat getImage(const sensor_msgs::msg::Image::SharedPtr &img_msg);
     void processImages();
-    void publishSE3fToOdom(const Sophus::SE3f& se3);
+    void publishSE3fToOdom(const Sophus::SE3f& se3, double tIm);
     void grabImu(const ImuMsg::SharedPtr msg);
 
 private:
