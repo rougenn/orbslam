@@ -135,5 +135,5 @@ colcon build
 
 
 cd /home
-mv /orbslam/trajectory_draw.py .
-mv /orbslam/udp_publisher.py .
+mv orbslam/trajectory_draw.py .
+mv orbslam/udp_publisher.py .
