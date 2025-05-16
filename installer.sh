@@ -111,6 +111,12 @@ make -j2
 export LD_LIBRARY_PATH=/home/ORB_SLAM3/lib:/usr/local/lib:$LD_LIBRARY_PATH
 
 # orbslam have built
+
+source /opt/ros/humble/setup.bash
+sudo apt install ros-$ROS_DISTRO-foxglove-bridge -y
+
+sudo apt install ros-humble-tf-transformations -y
+
 cd /home
 git clone https://github.com/rougenn/orbslam.git -b master
 mv orbslam/examples_ws/ .
@@ -129,3 +135,4 @@ colcon build
 
 cd /home
 mv /orbslam/trajectory_draw.py .
+mv /orbslam/udp_publisher.py .
