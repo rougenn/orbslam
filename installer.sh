@@ -111,6 +111,7 @@ make -j2
 export LD_LIBRARY_PATH=/home/ORB_SLAM3/lib:/usr/local/lib:$LD_LIBRARY_PATH
 
 # orbslam have built
+sudo apt update
 
 source /opt/ros/humble/setup.bash
 sudo apt install ros-$ROS_DISTRO-foxglove-bridge -y
@@ -122,7 +123,7 @@ git clone https://github.com/rougenn/orbslam.git -b master
 mv orbslam/examples_ws/ .
 mv /home/ORB_SLAM3/Vocabulary/ORBvoc.txt examples_ws/src/slam_example/config/
 
-cd /examples_ws
+cd examples_ws
 colcon build
 cd ..
 
