@@ -127,3 +127,5 @@ cd orbslam/ros2_ws/
 colcon build
 
 
+cd /home
+mv /orbslam/trajectory_draw.py .
