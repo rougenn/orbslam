@@ -276,4 +276,26 @@ export LD_LIBRARY_PATH=/home/ORB_SLAM3/lib:$LD_LIBRARY_PATH
 ros2 launch slam_example slam_example.launch.py
 ```
 
+# Containter sh file to run it (privileged should be replaced it the future. it only makes two cameras work at the same time):
+```bash
+DEVICES=""
+for dev in /dev/video* /dev/media* /dev/v4l-subdev*; do
+  [ -e "$dev" ] && DEVICES+=" --device $dev:$dev"
+done
+
+docker run -it \
+  --privileged \
+  --group-add video \
+  $DEVICES \
+  --device /dev/i2c-1:/dev/i2c-1 \
+  --device /dev/ttyUSB0:/dev/ttyUSB0 \
+  -v vscode:/root/.vscode-server \
+  -v /tmp/.X11-unix:/tmp/.X11-unix \
+  -v /home/rinat/Documents/camera_and_slam_settings.yaml:/home/examples_ws/src/slam_example/config/camera_and_slam_settings.yaml \
+  --network host \
+  --hostname raspberrypi \
+  -p 11811:11811/udp \
+  -e ROS_DOMAIN_ID=42 \
+  orbslam:v1.6 \
+  bash
 ```
