@@ -1,59 +1,60 @@
 %YAML:1.0
 File.version: "1.0"
 
-# Camera.type: "PinHole"
-# Camera1.fx: 333.94974039253634
-# Camera1.fy: 333.65915292406083
-# Camera1.cx: 333.65915292
-# Camera1.cy: 534.21236
 
-# Camera1.k1: 0.14253807
-# Camera1.k2: -0.32860464
-# Camera1.k3: 0.47141411
-# Camera1.p1: 0.0
-# Camera1.p2: 0.0
+Camera.type: "PinHole"
+Camera1.fx: 1190.8643427910781
+Camera1.fy: 1195.1834654293161
+Camera1.cx: 345.76472081765115
+Camera1.cy: 232.34420239020514
 
-# Camera.width: 640
-# Camera.height: 480
-
-Camera.type: "KannalaBrandt8"
-
-Camera1.fx: 333.94974039
-Camera1.fy: 333.65915292
-Camera1.cx: 221.3934123
-Camera1.cy: 348.56073567
-
-Camera1.k1: 0.10795065
-Camera1.k2: -0.06118499
-Camera1.k3: 0.03909594
-Camera1.k4: -0.01987686
+Camera1.k1: -0.03463143665004308
+Camera1.k2: 0.3415773624266906
+Camera1.p1: -0.0019036570066917646
+Camera1.p2: 0.002955568860046393
+Camera1.k3: 0.0
 
 Camera.width: 640
 Camera.height: 480
-Camera.fps: 30
+Camera.fps: 10
 Camera.RGB: 1
 
+# probably it works
+# Camera.TimeOffset: 0.007624992267412339
+
 # Transformation from body-frame (imu) to camera
+
 IMU.T_b_c1: !!opencv-matrix
    rows: 4
    cols: 4
    dt: f
-   data: [-0.9991788602051759, -0.0029805569687323015, -0.040406949887848397, 0.0317496059882324,
-          0.040502413506800464, -0.04696890097046099, -0.998074885387739, 0.0014310017302654914,
-          0.0010769490271583873, -0.9988919053740402, 0.047051052687583285, 0.0464247502623515,
+   data: [ 0.99965186, -0.0173873,  -0.0198453,   0.02964106,
+          -0.01937684,  0.02670898, -0.99945544,  0.00346151,
+           0.01790788,  0.99949203,  0.02636277, -0.03686928,
           0.0, 0.0, 0.0, 1.0]
 
-# IMU noise
-IMU.NoiseGyro: 4.3633e-05
-IMU.NoiseAcc: 1.6257e-03
-IMU.GyroWalk: 4.8481e-06
-IMU.AccWalk: 2.9194e-05
-IMU.Frequency: 200.0
+# IMU.T_b_c1: !!opencv-matrix
+#    rows: 4
+#    cols: 4
+#    dt: f
+#    data: [ 0.99965186, -0.01937684,  0.01790788, -0.02890342,
+#           -0.0173873,   0.02670898,  0.99949203,  0.03727348,
+#           -0.0198453,  -0.99945544,  0.02636277,  0.00501983,
+#           0.0, 0.0, 0.0, 1.0]
 
-ORBextractor.nFeatures: 1200
+# IMU noise
+IMU.NoiseGyro: 0.0011056
+IMU.NoiseAcc: 0.006056
+IMU.GyroWalk: 0.00062176
+IMU.AccWalk: 0.002
+IMU.Frequency: 200.0
+# maybe we should activate it 
+# IMU.InsertKFsWhenLost: 1
+
+ORBextractor.nFeatures: 2000
 ORBextractor.scaleFactor: 1.2
-ORBextractor.nLevels: 3
-ORBextractor.iniThFAST: 20
+ORBextractor.nLevels: 5
+ORBextractor.iniThFAST: 15
 ORBextractor.minThFAST: 5
 
 Viewer.KeyFrameSize:    0.05

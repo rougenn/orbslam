@@ -22,14 +22,33 @@ launch_camera() {
     source /opt/ros/humble/setup.bash
     source ~/camera_ws/install/setup.bash
     ros2 run camera_ros camera_node \
-      --ros-args \
-      -p width:=$CAMERA_WIDTH \
-      -p height:=$CAMERA_HEIGHT \
-      -p camera_name:=imx219 \
-      -p format:=BGR888 \
-      -p orientation:=180 \
-      -p role:=still \
-      -r /camera/image_raw:=/rover_camera/image_raw
+    --ros-args \
+    -p width:=$CAMERA_WIDTH \
+    -p height:=$CAMERA_HEIGHT \
+    -p camera_name:=imx219 \
+    -p format:=BGR888 \
+    -p orientation:=180 \
+    -p role:=still \
+    -p sensor_mode:="640:480" \
+    \
+    -p ExposureTimeMode:=1 \
+    -p ExposureTime:=2000 \
+    \
+    -p AnalogueGainMode:=0 \
+    \
+    -p AeFlickerMode:=0 \
+    -p AwbEnable:=true \
+    \
+    -p AnalogueGainMode:=1 \
+    -p AnalogueGain:=10.0 \
+    -p StatsOutputEnable:=false \
+    -p HdrMode:=0 \
+    -p FrameDurationLimits:="[100000,100000]" \
+    -p qos_overrides./rover_camera/image_raw.publisher.reliability:=best_effort \
+    -p qos_overrides./rover_camera/image_raw.publisher.history:=keep_last \
+    -p qos_overrides./rover_camera/image_raw.publisher.depth:=1 \
+    -r /camera/image_raw:=/rover_camera/image_raw
+
   ) > camera.log 2>&1 &
   PIDS+=($!)
 }
@@ -64,13 +83,12 @@ launch_foxglove_and_traj() {
 
 launch_slam() {
   echo "[INFO] Launching SLAM node..."
-  (
-    source /opt/ros/humble/setup.bash
-    source /home/examples_ws/install/setup.bash
-    export LD_LIBRARY_PATH=/home/ORB_SLAM3/lib:/usr/local/lib:$LD_LIBRARY_PATH
-    ros2 launch slam_example slam_example.launch.py
-  ) > slam.log 2>&1 &
-  PIDS+=($!)
+  source /opt/ros/humble/setup.bash
+  source /home/examples_ws/install/setup.bash
+  export LD_LIBRARY_PATH=/home/ORB_SLAM3/lib:/usr/local/lib:$LD_LIBRARY_PATH
+  ros2 launch slam_example slam_example.launch.py &
+  SLAM_PID=$!
+  PIDS+=($SLAM_PID)
 }
 
 launch_udp() {
