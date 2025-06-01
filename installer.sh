@@ -45,7 +45,7 @@ mkdir -p ~/camera_ws/src
 cd ~/camera_ws/src
 git clone https://github.com/christianrauch/camera_ros.git
 cd ~/camera_ws
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/humble/setup.bash
 
 sudo rosdep init
 rosdep update
@@ -53,7 +53,7 @@ rosdep update
 rosdep install -y \
     --from-paths src \
     --ignore-src \
-    --rosdistro $ROS_DISTRO \
+    --rosdistro humble \
     --skip-keys=libcamera
 
 colcon build \
@@ -113,7 +113,7 @@ export LD_LIBRARY_PATH=/home/ORB_SLAM3/lib:/usr/local/lib:$LD_LIBRARY_PATH
 # orbslam have built
 
 source /opt/ros/humble/setup.bash
-sudo apt install ros-$ROS_DISTRO-foxglove-bridge -y
+sudo apt install ros-humble-foxglove-bridge -y
 
 sudo apt install ros-humble-tf-transformations -y
 
