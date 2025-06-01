@@ -25,7 +25,7 @@ launch_camera() {
     --ros-args \
     -p width:=$CAMERA_WIDTH \
     -p height:=$CAMERA_HEIGHT \
-    -p camera_name:=imx219 \
+    -p camera:=1 \
     -p format:=BGR888 \
     -p orientation:=180 \
     -p role:=still \
@@ -34,16 +34,15 @@ launch_camera() {
     -p ExposureTimeMode:=1 \
     -p ExposureTime:=2000 \
     \
-    -p AnalogueGainMode:=0 \
+    -p AnalogueGainMode:=1 \
+    -p AnalogueGain:=1.0 \
     \
     -p AeFlickerMode:=0 \
     -p AwbEnable:=true \
     \
-    -p AnalogueGainMode:=1 \
-    -p AnalogueGain:=10.0 \
     -p StatsOutputEnable:=false \
     -p HdrMode:=0 \
-    -p FrameDurationLimits:="[100000,100000]" \
+    -p FrameDurationLimits:="[50000,50000]" \
     -p qos_overrides./rover_camera/image_raw.publisher.reliability:=best_effort \
     -p qos_overrides./rover_camera/image_raw.publisher.history:=keep_last \
     -p qos_overrides./rover_camera/image_raw.publisher.depth:=1 \
