@@ -48,8 +48,9 @@ cd ~/camera_ws
 source /opt/ros/$ROS_DISTRO/setup.bash
 
 sudo rosdep init
+source /opt/ros/humble/setup.bash
 rosdep update
-
+source /opt/ros/humble/setup.bash
 rosdep install -y \
     --from-paths src \
     --ignore-src \
