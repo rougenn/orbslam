@@ -1,16 +1,17 @@
 cd /home
 
-sudo apt update
-
-sudo apt install -y python-pip git python3-jinja2
-
 # add a new ros repo key
+source /opt/ros/humble/setup.bash
+
 sudo apt update && sudo apt install curl gnupg2 lsb-release
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key  -o /usr/share/keyrings/ros-archive-keyring.gpg
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/humble/setup.bash
 
+sudo apt update
+
+sudo apt install -y python-pip git python3-jinja2
 
 sudo apt install -y \
   libboost-dev \
