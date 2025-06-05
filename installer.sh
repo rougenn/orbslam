@@ -11,7 +11,6 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-a
 
 source /opt/ros/$ROS_DISTRO/setup.bash
 
-sudo apt install -y ros-$ROS_DISTRO-camera-ros
 
 sudo apt install -y \
   libboost-dev \
